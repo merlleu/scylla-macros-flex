@@ -4,7 +4,11 @@ version = "1.0.0"
 authors = ["merlleu <mrerl@warlegend.net>"]
 edition = "2021"
 description = "This fork of scylla-macros provide alternative parsers with improved compatibility when reading rows & UDTs."
-
+documentation = "https://docs.rs/scylla-macros-flex"
+readme = "Readme.md"
+repository = "https://github.com/merlleu/scylla-macros-flex"
+license = "MIT OR Apache-2.0"
+categories = ["database"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
