@@ -1,6 +1,6 @@
 [package]
 name = "scylla-macros-flex"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["merlleu <mrerl@warlegend.net>"]
 edition = "2021"
 description = "This fork of scylla-macros provide alternative parsers with improved compatibility when reading rows & UDTs."
