@@ -10,6 +10,7 @@ pub fn from_speedy_derive(tokens_input: TokenStream) -> TokenStream {
             fn from_cql(cql_val: scylla::frame::response::result::CqlValue)
             -> Result<Self, scylla::cql_to_rust::FromCqlValError> {
                 use scylla::cql_to_rust::FromCqlValError;
+                use scylla::frame::response::result::CqlValue;
                 use speedy::Readable;
 
                 match cql_val {
@@ -30,6 +31,7 @@ pub fn into_speedy_derive(tokens_input: TokenStream) -> TokenStream {
     let generated = quote! {
         impl scylla::frame::value::Value for #struct_name {
             fn serialize(&self, buf: &mut Vec<u8>) -> std::result::Result<(), scylla::frame::value::ValueTooBig> {
+                use scylla::frame::response::result::CqlValue;
                 use speedy::Writeable;
                 let raw = self.write_to_vec().map_err(|_| scylla::frame::value::ValueTooBig)?;
 

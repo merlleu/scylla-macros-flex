@@ -10,8 +10,8 @@ pub fn from_json_derive(tokens_input: TokenStream) -> TokenStream {
             fn from_cql(cql_val: scylla::frame::response::result::CqlValue)
             -> Result<Self, scylla::cql_to_rust::FromCqlValError> {
                 use scylla::cql_to_rust::FromCqlValError;
+                use scylla::frame::response::result::CqlValue;
 
-                // Interpret CqlValue as CQlValue::UserDefinedType
                 match cql_val {
                     CqlValue::Text(buf) => serde_json::from_str::<#struct_name>().map_err(|_| FromCqlValError::BadCqlType),
                     _ => Err(FromCqlValError::BadCqlType),
@@ -30,6 +30,7 @@ pub fn into_json_derive(tokens_input: TokenStream) -> TokenStream {
     let generated = quote! {
         impl scylla::frame::value::Value for #struct_name {
             fn serialize(&self, buf: &mut Vec<u8>) -> std::result::Result<(), scylla::frame::value::ValueTooBig> {
+                use scylla::frame::response::result::CqlValue;
                 let raw = serde_json::to_string(self).map_err(|_| scylla::frame::value::ValueTooBig)?;
 
                 CqlValue::Text(raw).serialize(buf)
