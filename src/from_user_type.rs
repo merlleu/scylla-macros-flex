@@ -47,7 +47,7 @@ pub fn from_user_type_derive(tokens_input: TokenStream) -> TokenStream {
                 use std::collections::BTreeMap;
                 use scylla::cql_to_rust::{FromCqlVal, FromCqlValError};
                 use scylla::frame::response::result::CqlValue;
-                
+
                 // Interpret CqlValue as CQlValue::UserDefinedType
                 let mut fields_iter = match cql_val {
                     CqlValue::UserDefinedType{fields, ..} => fields.into_iter().peekable(),
