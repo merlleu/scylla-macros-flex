@@ -16,8 +16,12 @@ proc-macro = true
 
 [dependencies]
 syn = "1.0"
-quote = "1.0" 
-speedy = {git = "https://github.com/merlleu/speedy", optional = true, features = ["uuid"]}
-serde_json = {version = "*", optional = true}
-rmp-serde = {version = "1.1.0", optional = true}
+quote = "1.0"
 cfg-if = "*"
+
+[features]
+default = []
+all = ["serde_json", "rmp-serde", "speedy"]
+serde_json = []
+rmp-serde = []
+speedy = []

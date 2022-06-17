@@ -32,7 +32,7 @@ pub fn into_speedy_derive(tokens_input: TokenStream) -> TokenStream {
         impl scylla::frame::value::Value for #struct_name {
             fn serialize(&self, buf: &mut Vec<u8>) -> std::result::Result<(), scylla::frame::value::ValueTooBig> {
                 use scylla::frame::response::result::CqlValue;
-                use speedy::Writeable;
+                use speedy::Writable;
                 let raw = self.write_to_vec().map_err(|_| scylla::frame::value::ValueTooBig)?;
 
                 CqlValue::Blob(raw).serialize(buf)
