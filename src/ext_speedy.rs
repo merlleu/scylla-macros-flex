@@ -15,6 +15,7 @@ pub fn from_speedy_derive(tokens_input: TokenStream) -> TokenStream {
 
                 match cql_val {
                     CqlValue::Blob(buf) => #struct_name::read_from_buffer(&buf).map_err(|_| FromCqlValError::BadCqlType),
+                    CqlValue::Empty => Ok(#struct_name::default()),
                     _ => Err(FromCqlValError::BadCqlType),
                 }
             }

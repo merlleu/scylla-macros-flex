@@ -13,7 +13,8 @@ pub fn from_json_derive(tokens_input: TokenStream) -> TokenStream {
                 use scylla::frame::response::result::CqlValue;
 
                 match cql_val {
-                    CqlValue::Text(buf) => serde_json::from_str::<#struct_name>(&buf).map_err(|_| FromCqlValError::BadCqlType),
+                    CqlValue::Text(buf) => serde_json::from_str::<#struct_name>(&buf).map_err(|_| FromCqlValError::BadCqlType),,
+                    CqlValue::Empty => Ok(#struct_name::default()),
                     _ => Err(FromCqlValError::BadCqlType),
                 }
             }

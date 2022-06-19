@@ -13,6 +13,7 @@ pub fn from_mp_derive(tokens_input: TokenStream) -> TokenStream {
                 use scylla::frame::response::result::CqlValue;
                 match cql_val {
                     CqlValue::Blob(buf) => rmp_serde::from_slice::<#struct_name>(&buf).map_err(|_| FromCqlValError::BadCqlType),
+                    CqlValue::Empty => Ok(#struct_name::default()),
                     _ => Err(FromCqlValError::BadCqlType),
                 }
             }
