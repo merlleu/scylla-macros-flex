@@ -2,8 +2,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 
 pub fn from_speedy_derive(tokens_input: TokenStream) -> TokenStream {
-    let (struct_name, _struct_fields) =
-        crate::parser::parse_struct_with_named_fields(tokens_input, "FromSpeedy");
+    let struct_name = crate::parser::parse_struct_name(tokens_input);
 
     let generated = quote! {
         impl scylla::cql_to_rust::FromCqlVal<scylla::frame::response::result::CqlValue> for #struct_name {
@@ -26,8 +25,7 @@ pub fn from_speedy_derive(tokens_input: TokenStream) -> TokenStream {
 }
 
 pub fn into_speedy_derive(tokens_input: TokenStream) -> TokenStream {
-    let (struct_name, _struct_fields) =
-        crate::parser::parse_struct_with_named_fields(tokens_input, "IntoSpeedy");
+    let struct_name = crate::parser::parse_struct_name(tokens_input);
 
     let generated = quote! {
         impl scylla::frame::value::Value for #struct_name {

@@ -22,3 +22,10 @@ pub(crate) fn parse_struct_with_named_fields(
 
     (struct_name, struct_fields)
 }
+
+pub(crate) fn parse_struct_name(tokens_input: TokenStream) -> Ident {
+    let input = parse::<DeriveInput>(tokens_input).expect("No DeriveInput");
+    let struct_name = input.ident;
+
+    struct_name
+}
