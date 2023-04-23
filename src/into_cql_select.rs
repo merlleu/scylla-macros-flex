@@ -5,37 +5,27 @@ use syn::spanned::Spanned;
 /// #[derive(IntoCQLSelect)] derives IntoCQLSelect for struct
 /// Works only on simple structs without generics etc
 pub fn into_cql_select_derive(tokens_input: TokenStream) -> TokenStream {
-    let (struct_name, struct_fields) =
+    let (struct_name, struct_fields, attrs) =
         crate::parser::parse_struct_with_named_fields(tokens_input, "FromRow");
 
-    // Generates tokens for field_name: field_type::from_cql(vals_iter.next().ok_or(...)?), ...
-    let set_fields_code = struct_fields.named.iter().map(|field| {
-        let field_name = &field.ident;
-        let field_type = &field.ty;
+    let table_name = attrs
+        .table
+        .unwrap_or_else(|| struct_name.to_string().to_lowercase());
 
-        quote_spanned! {field.span() =>
-            #field_name: {
-                let (col_ix, col_value) = vals_iter
-                    .next()
-                    .unwrap(); // vals_iter size is checked before this code is reached, so
-                               // it is safe to unwrap
+    // gerate sql query
+    let mut select_fields = Vec::new();
+    for field in struct_fields.named.iter() {
+        let field_name = field.ident.as_ref().unwrap();
+        select_fields.push(field_name.to_string());
+    }
 
-                match <#field_type as FromCqlVal<Option<CqlValue>>>::from_cql(col_value) {
-                    Err(FromCqlValError::ValIsNull) => <#field_type>::default(),
-                    Err(e) => return Err(FromRowError::BadCqlVal {
-                        err: e,
-                        column: col_ix,
-                    }),
-                    Ok(cql_val) => cql_val
-                }
-            },
-        }
-    });
+    let select_fields_str = select_fields.join(", ");
+
 
     let generated = quote! {
         impl IntoCQLSelect for #struct_name {
             pub fn into_cql_select() -> &'static str {
-                ""
+                concat!("SELECT ", #select_fields_str, " FROM ", #table_name)
             }
         }
     };

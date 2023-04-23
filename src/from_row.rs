@@ -5,7 +5,7 @@ use syn::spanned::Spanned;
 /// #[derive(FromRow)] derives FromRow for struct
 /// Works only on simple structs without generics etc
 pub fn from_row_derive(tokens_input: TokenStream) -> TokenStream {
-    let (struct_name, struct_fields) =
+    let (struct_name, struct_fields, _) =
         crate::parser::parse_struct_with_named_fields(tokens_input, "FromRow");
 
     // Generates tokens for field_name: field_type::from_cql(vals_iter.next().ok_or(...)?), ...
