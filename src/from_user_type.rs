@@ -7,7 +7,7 @@ use syn::spanned::Spanned;
 pub fn from_user_type_derive(tokens_input: TokenStream) -> TokenStream {
     let (struct_name, struct_fields) =
         crate::parser::parse_struct_with_named_fields(tokens_input, "FromUserType");
-
+    
     // Generates tokens for field_name: field_type::from_cql(fields.remove(stringify!(#field_name)).unwrap_or(None)) ?, ...
     let set_fields_code = struct_fields.named.iter().map(|field| {
         let field_name = &field.ident;
@@ -39,10 +39,7 @@ pub fn from_user_type_derive(tokens_input: TokenStream) -> TokenStream {
                     }
                 ) {
                     Err(FromCqlValError::ValIsNull) => <#field_type>::default(),
-                    Err(e) => return Err(FromRowError::BadCqlVal {
-                        err: e,
-                        column: col_ix,
-                    }),
+                    Err(e) => return Err(e),
                     Ok(cql_val) => cql_val
                 }
             },
