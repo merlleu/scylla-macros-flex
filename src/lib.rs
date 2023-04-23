@@ -4,6 +4,7 @@ mod from_row;
 mod from_user_type;
 mod into_cql_select;
 mod parser;
+use into_cql_select::SelectCQLQuery;
 
 /// #[derive(FromRow)] derives FromRow for struct
 /// Works only on simple structs without generics etc
