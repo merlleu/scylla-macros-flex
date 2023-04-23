@@ -14,7 +14,8 @@ pub fn from_user_type_derive(tokens_input: TokenStream) -> TokenStream {
         let field_type = &field.ty;
 
         quote_spanned! {field.span() =>
-            #field_name: <#field_type as FromCqlVal<Option<CqlValue>>>::from_cql(
+            #field_name: {
+                match <#field_type as FromCqlVal<Option<CqlValue>>>::from_cql(
                 {
                     let received_field_name: Option<&String> = fields_iter
                         .peek()
@@ -36,8 +37,15 @@ pub fn from_user_type_derive(tokens_input: TokenStream) -> TokenStream {
                         None
                     }
                 }
-            ) ?,
-        }
+            ) {
+                Err(FromCqlValError::ValIsNull) => <#field_type>::default(),
+                Err(e) => return Err(FromRowError::BadCqlVal {
+                    err: e,
+                    column: col_ix,
+                }),
+                Ok(cql_val) => cql_val
+            },
+        }}
     });
 
     let generated = quote! {
