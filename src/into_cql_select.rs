@@ -1,6 +1,5 @@
 use proc_macro::TokenStream;
-use quote::{quote, quote_spanned};
-use syn::spanned::Spanned;
+use quote::quote;
 
 /// #[derive(IntoCQLSelect)] derives IntoCQLSelect for struct
 /// Works only on simple structs without generics etc
@@ -21,10 +20,9 @@ pub fn into_cql_select_derive(tokens_input: TokenStream) -> TokenStream {
 
     let select_fields_str = select_fields.join(", ");
 
-
     let generated = quote! {
         impl IntoCQLSelect for #struct_name {
-            pub fn into_cql_select() -> &'static str {
+            fn into_cql_select() -> &'static str {
                 concat!("SELECT ", #select_fields_str, " FROM ", #table_name)
             }
         }
@@ -32,7 +30,6 @@ pub fn into_cql_select_derive(tokens_input: TokenStream) -> TokenStream {
 
     TokenStream::from(generated)
 }
-
 
 pub trait IntoCQLSelect {
     fn into_cql_select() -> &'static str;
