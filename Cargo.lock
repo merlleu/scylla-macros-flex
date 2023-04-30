@@ -28,7 +28,7 @@ dependencies = [
 
 [[package]]
 name = "scylla-macros-flex"
-version = "1.5.0"
+version = "1.5.1"
 dependencies = [
  "cfg-if",
  "quote",
