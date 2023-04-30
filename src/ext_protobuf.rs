@@ -30,7 +30,7 @@ pub fn into_protobuf_derive(tokens_input: TokenStream) -> TokenStream {
         impl scylla::frame::value::Value for #struct_name {
             fn serialize(&self, buf: &mut Vec<u8>) -> std::result::Result<(), scylla::frame::value::ValueTooBig> {
                 use scylla::frame::response::result::CqlValue;
-                let raw_buf = prost::Message::encode_to_vec(self).map_err(|_| scylla::frame::value::ValueTooBig)?;
+                let raw_buf = prost::Message::encode_to_vec(self);
                 CqlValue::Blob(raw_buf).serialize(buf)
             }
         }
