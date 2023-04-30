@@ -21,8 +21,8 @@ pub fn into_cql_select_derive(tokens_input: TokenStream) -> TokenStream {
     let select_fields_str = select_fields.join(", ");
 
     let generated = quote! {
-        impl scylla_macros_flex::SelectCQLQuery for #struct_name {
-            fn select_query() -> &'static str {
+        impl #struct_name {
+            pub const fn __cql_select_query<'a>() -> &'a str {
                 concat!("SELECT ", #select_fields_str, " FROM ", #table_name)
             }
         }
@@ -31,6 +31,3 @@ pub fn into_cql_select_derive(tokens_input: TokenStream) -> TokenStream {
     TokenStream::from(generated)
 }
 
-pub trait SelectCQLQuery {
-    fn select_query() -> &'static str;
-}

@@ -4,7 +4,6 @@ mod from_row;
 mod from_user_type;
 mod into_cql_select;
 mod parser;
-use into_cql_select::SelectCQLQuery;
 
 /// #[derive(FromRow)] derives FromRow for struct
 /// Works only on simple structs without generics etc
@@ -76,6 +75,25 @@ cfg_if::cfg_if! {
         #[proc_macro_derive(IntoMessagePack)]
         pub fn into_mp_derive(tokens_input: TokenStream) -> TokenStream {
             ext_rmp_serde::into_mp_derive(tokens_input)
+        }
+    }
+}
+
+cfg_if::cfg_if! {
+    if #[cfg(feature = "protobuf")]{
+        mod ext_protobuf;
+        /// #[derive(FromProtobuf)] derives FromProtobuf for struct
+        /// Works only on simple structs without generics etc
+        #[proc_macro_derive(FromProtobuf)]
+        pub fn from_protobuf_derive(tokens_input: TokenStream) -> TokenStream {
+            ext_protobuf::from_protobuf_derive(tokens_input)
+        }
+
+        /// #[derive(IntoProtobuf)] derives FromProtobuf for struct
+        /// Works only on simple structs without generics etc
+        #[proc_macro_derive(IntoProtobuf)]
+        pub fn into_protobuf_derive(tokens_input: TokenStream) -> TokenStream {
+            ext_protobuf::into_protobuf_derive(tokens_input)
         }
     }
 }
