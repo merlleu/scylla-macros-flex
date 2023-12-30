@@ -35,6 +35,19 @@ pub fn into_json_derive(tokens_input: TokenStream) -> TokenStream {
                 CqlValue::Text(raw).serialize(buf)
             }
         }
+
+        impl scylla::serialize::value::SerializeCql for #struct_name {
+            fn serialize<'b>(
+                &self,
+                typ: &scylla::frame::response::result::ColumnType,
+                writer: scylla::serialize::CellWriter<'b>,
+            ) -> Result<scylla::serialize::writers::WrittenCellProof<'b>, scylla::serialize::SerializationError> {
+                use scylla::frame::response::result::CqlValue;
+                let raw = serde_json::to_string(self).map_err(scylla::serialize::SerializationError::new)?;
+
+                CqlValue::Text(raw).serialize(typ,writer)
+            }
+        }
     };
 
     TokenStream::from(generated)

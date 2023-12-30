@@ -37,6 +37,20 @@ pub fn into_speedy_derive(tokens_input: TokenStream) -> TokenStream {
                 CqlValue::Blob(raw).serialize(buf)
             }
         }
+
+        impl scylla::serialize::value::SerializeCql for #struct_name {
+            fn serialize<'b>(
+                &self,
+                typ: &scylla::frame::response::result::ColumnType,
+                writer: scylla::serialize::CellWriter<'b>,
+            ) -> Result<scylla::serialize::writers::WrittenCellProof<'b>, scylla::serialize::SerializationError> {
+                use scylla::frame::response::result::CqlValue;
+                use speedy::Writable;
+                let raw = self.write_to_vec().map_err(scylla::serialize::SerializationError::new)?;
+
+                CqlValue::Blob(raw).serialize(typ,writer)
+            }
+        }
     };
 
     TokenStream::from(generated)

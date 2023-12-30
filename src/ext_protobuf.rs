@@ -34,6 +34,18 @@ pub fn into_protobuf_derive(tokens_input: TokenStream) -> TokenStream {
                 CqlValue::Blob(raw_buf).serialize(buf)
             }
         }
+
+        impl scylla::serialize::value::SerializeCql for #struct_name {
+            fn serialize<'b>(
+                &self,
+                typ: &scylla::frame::response::result::ColumnType,
+                writer: scylla::serialize::CellWriter<'b>,
+            ) -> Result<scylla::serialize::writers::WrittenCellProof<'b>, scylla::serialize::SerializationError> {
+                use scylla::frame::response::result::CqlValue;
+                let raw_buf = prost::Message::encode_to_vec(self);
+                CqlValue::Blob(raw_buf).serialize(typ,writer)
+            }
+        }
     };
 
     TokenStream::from(generated)

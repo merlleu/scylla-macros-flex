@@ -34,6 +34,19 @@ pub fn into_mp_derive(tokens_input: TokenStream) -> TokenStream {
                 CqlValue::Blob(raw).serialize(buf)
             }
         }
+
+        impl scylla::serialize::value::SerializeCql for #struct_name {
+            fn serialize<'b>(
+                &self,
+                typ: &scylla::frame::response::result::ColumnType,
+                writer: scylla::serialize::CellWriter<'b>,
+            ) -> Result<scylla::serialize::writers::WrittenCellProof<'b>, scylla::serialize::SerializationError> {
+                use scylla::frame::response::result::CqlValue;
+                let raw = rmp_serde::to_vec(self).map_err(scylla::serialize::SerializationError::new)?;
+
+                CqlValue::Blob(raw).serialize(typ,writer)
+            }
+        }
     };
 
     TokenStream::from(generated)
