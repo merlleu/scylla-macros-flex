@@ -36,7 +36,7 @@ pub fn into_json_derive(tokens_input: TokenStream) -> TokenStream {
             }
         }
 
-        impl scylla::serialize::value::SerializeCql for #struct_name {
+        impl scylla::serialize::value::SerializeValue for #struct_name {
             fn serialize<'b>(
                 &self,
                 typ: &scylla::frame::response::result::ColumnType,
